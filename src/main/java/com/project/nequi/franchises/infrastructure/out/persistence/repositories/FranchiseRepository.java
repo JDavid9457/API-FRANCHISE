@@ -4,5 +4,5 @@ import com.project.nequi.franchises.infrastructure.out.persistence.entity.Franch
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 
-public interface FranchiseRepository  extends ReactiveMongoRepository<FranchiseEntity, String> {
+public interface FranchiseRepository extends ReactiveMongoRepository<FranchiseEntity, String>  {
 }

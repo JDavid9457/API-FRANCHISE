@@ -5,6 +5,7 @@ import com.project.nequi.franchises.common.WebAdapter;
 import com.project.nequi.franchises.domain.model.Branch;
 import com.project.nequi.franchises.domain.model.Franchise;
 import com.project.nequi.franchises.infrastructure.dto.request.FranchiseRequestDTO;
+import com.project.nequi.franchises.infrastructure.dto.request.ProductRequestDTO;
 import com.project.nequi.franchises.infrastructure.dto.response.FranchiseResponseDTO;
 import com.project.nequi.franchises.infrastructure.dto.response.ResponseDTO;
 import com.project.nequi.franchises.infrastructure.out.persistence.ResponseEntityBuilder;
@@ -31,13 +32,16 @@ public class FranchiseController {
     @GetMapping()
     @SneakyThrows
     public Flux<Franchise> getFranchises() {
-        return franchisePort.findAll();
+        return franchisePort.findAll()
+                .doOnNext(franchise -> System.out.println("Franchise: " + franchise))
+                .doOnError(error -> System.err.println("Error: " + error.getMessage()));
     }
+
 
     @PostMapping()
     @SneakyThrows
-    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>>
-        saveFranchise(@RequestBody FranchiseRequestDTO franchiseRequestDTO) {
+    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveFranchise(
+            @RequestBody FranchiseRequestDTO franchiseRequestDTO) {
         return franchisePort.save(FranchiseTransformer.toFranchise(franchiseRequestDTO))
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildSaveResponse);
@@ -45,8 +49,8 @@ public class FranchiseController {
 
     @GetMapping("/{id}")
     @SneakyThrows
-    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>>
-    searchByIdFranchises(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> searchByIdFranchises(
+            @PathVariable("id") String id) {
         return franchisePort.findById(id)
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildFindByIdResponse);
@@ -57,16 +61,33 @@ public class FranchiseController {
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveBranchInFranchise(
             @PathVariable String idFranchise,
             @RequestBody Branch branch) {
-        return franchisePort.register(idFranchise,branch)
+        return franchisePort.register(idFranchise, branch)
                 .flatMap(registeredBranch -> franchisePort.findById(idFranchise))
-                .map(franchise -> {
-                    FranchiseResponseDTO dto = FranchiseTransformer.toFranchiseToDTO(franchise);
-                    ResponseDTO<FranchiseResponseDTO> responseDTO = ResponseDTO.<FranchiseResponseDTO>builder()
-                            .message("Branch registered in franchise successfully.")
-                            .status(HttpStatus.CREATED.value())
-                            .data(dto)
-                            .build();
-                    return ResponseEntity.ok(responseDTO);
-                });
+                .map(FranchiseTransformer::toFranchiseToDTO)
+                .map(ResponseEntityBuilder::buildRegisterResponse);
+    }
+
+
+    @PostMapping("/{idFranchise}/branch/{idBranch}/product")
+    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveProductForBranch(
+            @PathVariable String idFranchise,
+            @PathVariable String idBranch,
+            @RequestBody ProductRequestDTO productRequestDTO) {
+        return franchisePort.registerProduct(idFranchise, idBranch, FranchiseTransformer.toProduct(productRequestDTO))
+                .map(FranchiseTransformer::toFranchiseToDTO)
+                .map(ResponseEntityBuilder::buildRegisterProductForBranchResponse);
+    }
+
+    @DeleteMapping("/{idFranchise}/branch/{idBranch}/product/{idProduct}")
+    public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> deleteProductFromBranch(
+            @PathVariable String idFranchise,
+            @PathVariable String idBranch,
+            @PathVariable String idProduct) {
+        return franchisePort.deleteProduct(idFranchise, idBranch, idProduct)
+                .map(FranchiseTransformer::toFranchiseToDTO)
+                .map(ResponseEntityBuilder::buildDeletedResponse);
+
     }
 }
+
+

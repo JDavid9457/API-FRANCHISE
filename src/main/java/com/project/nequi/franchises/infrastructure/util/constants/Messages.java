@@ -7,5 +7,8 @@ public class Messages {
     public static final String EMPTY_LIST_FRANCHISE = "Lista vacia!";
     public static final String ERROR_IN_SAVING = "Error en guardar franqucias";
     public static final String ID_FOUND = "Id encontrado!.";
-
+    public static final String USER_NOT_FOUND = "Usuario no encontrado!.";
+    public static final String USER_DELETED_SUCCESSFULLY = "Producto eliminado exitosamente!.";
 }
+
+

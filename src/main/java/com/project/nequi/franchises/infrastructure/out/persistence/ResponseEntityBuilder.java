@@ -26,12 +26,29 @@ public class ResponseEntityBuilder {
                         .build());
     }
 
+    public static <T> ResponseEntity<ResponseDTO<T>> buildRegisterProductForBranchResponse(T data) {
+        return ResponseEntity.ok(
+                ResponseDTO.<T>builder()
+                        .message(BRACH_REGISTER_IN_FRANCHISE)
+                        .status(HttpStatus.CREATED.value())
+                        .data(data)
+                        .build());
+    }
+
     public static <T> ResponseEntity<ResponseDTO<T>> buildFindByIdResponse(T data) {
         return ResponseEntity.ok(
                 ResponseDTO.<T>builder()
                         .message(ID_FOUND)
                         .status(HttpStatus.OK.value())
                         .data(data)
+                        .build());
+    }
+
+    public static <T> ResponseEntity<ResponseDTO<T>> buildDeletedResponse(T data) {
+        return ResponseEntity.ok(
+                ResponseDTO.<T>builder()
+                        .message(USER_DELETED_SUCCESSFULLY)
+                        .status(HttpStatus.OK.value())
                         .build());
     }
 

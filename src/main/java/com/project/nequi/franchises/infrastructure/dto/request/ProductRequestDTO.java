@@ -1,17 +1,16 @@
-package com.project.nequi.franchises.infrastructure.dto;
+package com.project.nequi.franchises.infrastructure.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class FranchiseDTO {
+@Data
+public class ProductRequestDTO {
     private String id;
     private String name;
-    private List<BranchDTO> branches;
+    private int stock;
 }

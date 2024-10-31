@@ -38,6 +38,8 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
         this.franchiseMapper = franchiseMapper;
     }
 
+
+
     @Override
     public Flux<Franchise> listFranchise() {
         return franchiseRepository.findAll()
@@ -47,11 +49,16 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
 
     @Override
     public Mono<Franchise> saveFranchise(Franchise franchise) {
+        franchise.getBranches().forEach(branch -> {
+            generateIdentifier(branch);
+        });
+
         FranchiseEntity newFranchise = franchiseMapper.toFranchiseEntity(franchise);
         return franchiseRepository.save(newFranchise)
                 .map(franchiseMapper::toFranchise)
                 .onErrorResume(e -> Mono.error(new RuntimeException(ERROR_IN_SAVING)));
     }
+
 
     @Override
     public Mono<Franchise> findByIdFranchise(String id) {
@@ -62,7 +69,7 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
 
     @Override
     public Mono<Branch> RegisterBranchForFranchise(String idFranchise, Branch branch) {
-        validateBranch(branch);
+        generateIdentifier(branch);
         BranchEntity branchEntity = franchiseMapper.toBranchEntityToModel(branch);
         return franchiseRepository.findById(idFranchise)
                 .switchIfEmpty(Mono.error(new ExportException("no found")))
@@ -74,29 +81,34 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
                 .onErrorMap(error -> new ExportException("Failed to register branch."));
     }
 
-    private void validateBranch(Branch branch) {
+    private void generateIdentifier(Branch branch) {
         if (branch.getId() == null || branch.getId().isEmpty()) {
             branch.setId(new ObjectId().toString());
         }
+        branch.getProducts().forEach(product -> {
+            if (product.getId() == null || product.getId().isEmpty()) {
+                product.setId(new ObjectId().toString());
+            }
+        });
     }
 
-    public Mono<Franchise> registerProductForBranch(String franchiseId, String branchId,
-                                                    Product product) {
-        return franchiseRepository.findById(franchiseId)
-                .switchIfEmpty(Mono.error(new RuntimeException("Franchise not found")))
-                .flatMap(franchise -> {
-                    BranchEntity filterBranch = franchise.getBranchEntities().stream().filter(b -> b.getId().equals(branchId)).findFirst()
-                            .orElseThrow(() -> new RuntimeException("Branch not found"));
 
-                    ProductEntity p = franchiseMapper.toProductEntity(product);
-                    if (p.getId() == null || p.getId().isEmpty()) {
-                        p.setId(new ObjectId().toString());
-                    }
-                    filterBranch.getProducts().add(p);
-
-                    return franchiseRepository.save(franchise).map(franchiseMapper::toFranchise);
-                }).onErrorMap(error -> new RuntimeException(
-                        "Failed to add product to branch", error));
+    public Mono<Franchise> registerProductForBranch(String idFranchise, String idBranch, Product product) {
+        if (product.getId() == null || product.getId().isEmpty()) {
+            product.setId(new ObjectId().toString());
+        }
+        ProductEntity prepareProduct = franchiseMapper.toProductEntity(product);
+        return franchiseRepository.findById(idFranchise)
+            .switchIfEmpty(Mono.error(new RuntimeException("Franchise not found")))
+            .flatMap(franchise -> {
+                BranchEntity branch = franchise.getBranchEntities().stream()
+                        .filter(b -> b.getId().equals(idBranch))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Branch not found"));
+                branch.getProducts().add(prepareProduct);
+                return franchiseRepository.save(franchise)
+                        .map(franchiseMapper::toFranchise);
+            });
     }
 
     @Override

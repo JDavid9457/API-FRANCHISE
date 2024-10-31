@@ -8,7 +8,9 @@ import com.project.nequi.franchises.infrastructure.out.persistence.entity.Franch
 import com.project.nequi.franchises.infrastructure.out.persistence.entity.ProductEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class FranchiseMapper {
@@ -18,16 +20,20 @@ public class FranchiseMapper {
         return FranchiseEntity.builder()
                 .id(franchise.getId())
                 .nameFranchise(franchise.getName())
-                .branchEntities(toBranchEntity(franchise.getBranches()))
+                .branchEntities(toBranchEntityTo(franchise.getBranches()))
                 .build();
     }
 
-    public List<BranchEntity> toBranchEntity(List<Branch> branchList) {
-        return branchList.stream().map(branchEntity -> BranchEntity.builder()
-                .id(branchEntity.getId())
-                .nameBranch(branchEntity.getName())
-                .products(toProductEntity(branchEntity.getProducts()))
-                .build()).toList();
+    public List<BranchEntity> toBranchEntityTo(List<Branch> branchList) {
+        return Optional.ofNullable(branchList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(branchEntity -> BranchEntity.builder()
+                        .id(branchEntity.getId())
+                        .nameBranch(branchEntity.getName())
+                        .products(toProductEntity(branchEntity.getProducts()))
+                        .build())
+                .toList();
     }
 
     public BranchEntity toBranchEntityToModel(Branch branch) {
@@ -39,7 +45,9 @@ public class FranchiseMapper {
     }
 
     public List<ProductEntity> toProductEntity(List<Product> productList) {
-        return productList.stream().map(product -> ProductEntity.builder()
+        return Optional.ofNullable(productList)
+                .orElse(Collections.emptyList())
+                .stream().map(product -> ProductEntity.builder()
                         .id(product.getId())
                         .nameProduct(product.getName())
                         .stock(product.getStock())
@@ -54,17 +62,22 @@ public class FranchiseMapper {
                 .branches(toBranch(franchise.getBranchEntities()))
                 .build();
     }
-
     public List<Branch> toBranch(List<BranchEntity> branchList) {
-        return branchList.stream().map(branchEntity -> Branch.builder()
-                .id(branchEntity.getId())
-                .name(branchEntity.getNameBranch())
-                .products(toProduct(branchEntity.getProducts()))
-                .build()).toList();
+        return Optional.ofNullable(branchList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(branchEntity -> Branch.builder()
+                        .id(branchEntity.getId())
+                        .name(branchEntity.getNameBranch())
+                        .products(toProduct(branchEntity.getProducts()))
+                        .build())
+                .toList();
     }
 
     public List<Product> toProduct(List<ProductEntity> productList) {
-        return productList.stream().map(productEntity -> Product.builder()
+        return Optional.ofNullable(productList)
+                .orElse(Collections.emptyList())
+                .stream().map(productEntity -> Product.builder()
                 .id(productEntity.getId())
                 .name(productEntity.getNameProduct())
                 .stock(productEntity.getStock())

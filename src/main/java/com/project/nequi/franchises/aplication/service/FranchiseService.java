@@ -16,6 +16,8 @@ public class FranchiseService implements FranchisePort {
 
     private final ListFranchisePort listFranchisePort;
 
+    private final FindFranchiseByIdPort findFranchiseByIdPort;
+
     private final RegisterBranchForFranchisePort registerBranchForFranchisePort;
 
     private final RegisterProductForBranchPort registerProductForBranchPort;
@@ -35,18 +37,20 @@ public class FranchiseService implements FranchisePort {
     private final UpdateProductNamePort updateProductNamePort;
 
     public FranchiseService(SaveFranchisePort saveFranchisePort,
-                            ListFranchisePort listFranchisePort,
+                            ListFranchisePort listFranchisePort, FindFranchiseByIdPort findFranchiseByIdPort,
+
                             RegisterBranchForFranchisePort
                             registerBranchForFranchisePort,
                             RegisterProductForBranchPort registerProductForBranchPort, DeleteProductForBranchPort deleteProductForBranchPort,
                             ModifyProductStockPort modifyProductStockPort,
                             GetProductForMaximumStockPort getProductForMaximumStockP,
-                           // FindByNameFranchisePort findByNameFranchisePort,
+                            // FindByNameFranchisePort findByNameFranchisePort,
                             UpdateFranchiseNamePort updateFranchiseNamePort,
                             UpdateBranchNamePort updateBranchNamePort,
                             UpdateProductNamePort updateProductNamePort) {
         this.saveFranchisePort = saveFranchisePort;
         this.listFranchisePort = listFranchisePort;
+        this.findFranchiseByIdPort = findFranchiseByIdPort;
         this.registerBranchForFranchisePort = registerBranchForFranchisePort;
         this.registerProductForBranchPort = registerProductForBranchPort;
         this.deleteProductForBranchPort = deleteProductForBranchPort;
@@ -69,7 +73,7 @@ public class FranchiseService implements FranchisePort {
 
     @Override
     public Mono<Franchise> findById(String id) {
-        return null;
+        return findFranchiseByIdPort.findByIdFranchise(id);
     }
 
     @Override

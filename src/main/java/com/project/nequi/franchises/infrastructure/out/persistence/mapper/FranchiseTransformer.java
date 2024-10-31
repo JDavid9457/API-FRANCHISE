@@ -6,6 +6,7 @@ import com.project.nequi.franchises.domain.model.Product;
 import com.project.nequi.franchises.infrastructure.dto.BranchDTO;
 import com.project.nequi.franchises.infrastructure.dto.ProductDTO;
 import com.project.nequi.franchises.infrastructure.dto.request.FranchiseRequestDTO;
+import com.project.nequi.franchises.infrastructure.dto.request.ProductRequestDTO;
 import com.project.nequi.franchises.infrastructure.dto.response.FranchiseResponseDTO;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class FranchiseTransformer {
         return branchList.stream().map(branchDTO -> BranchDTO.builder()
                 .id(branchDTO.getId())
                 .name(branchDTO.getName())
-               .products(toProductDTO(branchDTO.getProducts()))
+                .products(toProductDTO(branchDTO.getProducts()))
                 .build()).toList();
     }
 
@@ -62,6 +63,13 @@ public class FranchiseTransformer {
                 .toList();
     }
 
+    public static Product toProduct(ProductRequestDTO productDTO) {
+        return Product.builder()
+                .id(productDTO.getId())
+                .name(productDTO.getName())
+                .stock(productDTO.getStock())
+                .build();
+    }
 
 
 }

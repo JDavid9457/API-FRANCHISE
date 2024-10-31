@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collation = "franchise")
+@Document(collection = "franchises")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
