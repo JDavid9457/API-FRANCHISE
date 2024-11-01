@@ -12,8 +12,6 @@ import com.project.nequi.franchises.infrastructure.out.persistence.entity.Produc
 import com.project.nequi.franchises.infrastructure.out.persistence.mapper.FranchiseMapper;
 import com.project.nequi.franchises.infrastructure.out.persistence.repositories.FranchiseRepository;
 import org.bson.types.ObjectId;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -38,8 +36,6 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
         this.franchiseMapper = franchiseMapper;
     }
 
-
-
     @Override
     public Flux<Franchise> listFranchise() {
         return franchiseRepository.findAll()
@@ -49,10 +45,7 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
 
     @Override
     public Mono<Franchise> saveFranchise(Franchise franchise) {
-        franchise.getBranches().forEach(branch -> {
-            generateIdentifier(branch);
-        });
-
+        franchise.getBranches().forEach(this::generateIdentifier);
         FranchiseEntity newFranchise = franchiseMapper.toFranchiseEntity(franchise);
         return franchiseRepository.save(newFranchise)
                 .map(franchiseMapper::toFranchise)
@@ -134,10 +127,14 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
         return franchiseRepository.findById(franchiseId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Franchise not found")))
                 .flatMap(franchise -> {
-                    BranchEntity branch = franchise.getBranchEntities().stream().filter(b -> b.getId().equals(branchId)).findFirst()
+                    BranchEntity branch = franchise.getBranchEntities()
+                            .stream().filter(b -> b.getId().equals(branchId))
+                            .findFirst()
                             .orElseThrow(() -> new RuntimeException("Branch not found"));
 
-                    ProductEntity product = branch.getProducts().stream().filter(p -> p.getId().equals(productId)).findFirst()
+                    ProductEntity product = branch.getProducts()
+                            .stream()
+                            .filter(p -> p.getId().equals(productId)).findFirst()
                             .orElseThrow(() -> new RuntimeException("Product not found"));
 
                     product.setStock(newStock);
@@ -184,7 +181,9 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
         return franchiseRepository.findById(idFranchise)
                 .switchIfEmpty(Mono.error(new RuntimeException("Franchise not found")))
                 .flatMap(franchise -> {
-                    BranchEntity branch = franchise.getBranchEntities().stream().filter(b -> b.getId().equals(idBranch)).findFirst()
+                    BranchEntity branch = franchise.getBranchEntities()
+
+                            .stream().filter(b -> b.getId().equals(idBranch)).findFirst()
                             .orElseThrow(() -> new RuntimeException("Branch not found"));
 
                     branch.setNameBranch(newName);
@@ -198,15 +197,17 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
         return franchiseRepository.findById(idFranchise)
                 .switchIfEmpty(Mono.error(new RuntimeException("Franchise not found")))
                 .flatMap(franchise -> {
-                    BranchEntity branch = franchise.getBranchEntities().stream().filter(b -> b.getId().equals(idBranch)).findFirst()
+                    BranchEntity branch = franchise.getBranchEntities()
+                            .stream().filter(b -> b.getId().equals(idBranch)).findFirst()
                             .orElseThrow(() -> new RuntimeException("Branch not found"));
 
-                    ProductEntity product = branch.getProducts().stream().filter(p -> p.getId().equals(idProduct)).findFirst()
+                    ProductEntity product = branch.getProducts()
+                            .stream().filter(p -> p.getId().equals(idProduct)).findFirst()
                             .orElseThrow(() -> new RuntimeException("Product not found"));
 
                     product.setNameProduct(newName);
                     return franchiseRepository.save(franchise).map(franchiseMapper::toFranchise);
-                }).onErrorMap(error -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                }).onErrorMap(error -> new RuntimeException(
                         "Failed to update product name", error));
     }
 }

@@ -28,8 +28,6 @@ public class FranchiseService implements FranchisePort {
 
     private final GetProductForMaximumStockPort getProductForMaximumStockP;
 
-    //private final FindByNameFranchisePort findByNameFranchisePort;
-
     private final UpdateFranchiseNamePort updateFranchiseNamePort;
 
     private final UpdateBranchNamePort updateBranchNamePort;
@@ -44,7 +42,6 @@ public class FranchiseService implements FranchisePort {
                             RegisterProductForBranchPort registerProductForBranchPort, DeleteProductForBranchPort deleteProductForBranchPort,
                             ModifyProductStockPort modifyProductStockPort,
                             GetProductForMaximumStockPort getProductForMaximumStockP,
-                            // FindByNameFranchisePort findByNameFranchisePort,
                             UpdateFranchiseNamePort updateFranchiseNamePort,
                             UpdateBranchNamePort updateBranchNamePort,
                             UpdateProductNamePort updateProductNamePort) {

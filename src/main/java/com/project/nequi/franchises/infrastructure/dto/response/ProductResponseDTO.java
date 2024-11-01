@@ -1,4 +1,4 @@
-package com.project.nequi.franchises.domain.model;
+package com.project.nequi.franchises.infrastructure.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class Product {
+public class ProductResponseDTO {
     private String id;
     private String name;
     private Integer stock;
-
 }
