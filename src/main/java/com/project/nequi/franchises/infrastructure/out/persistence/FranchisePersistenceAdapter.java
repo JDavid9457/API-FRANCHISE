@@ -124,23 +124,21 @@ public class FranchisePersistenceAdapter implements SaveFranchisePort, ListFranc
     }
 
     @Override
-    public Mono<Franchise> modifyProductStock(String franchiseId, String branchId, String productId,
-                                              int newStock) {
-        return franchiseRepository.findById(franchiseId)
+    public Mono<Franchise> modifyProductStock(String idFranchise, String idBranch, String idProduct, int newStock) {
+        return franchiseRepository.findById(idFranchise)
                 .switchIfEmpty(Mono.error(new FranchiseNotFoundException(FRANCHISE_NOT_FOUND)))
                 .flatMap(franchise -> {
                     BranchEntity branch = franchise.getBranchEntities()
-                            .stream().filter(b -> b.getId().equals(branchId))
-                            .findFirst()
+                            .stream().filter(b -> b.getId().equals(idBranch)).findFirst()
                             .orElseThrow(() -> new RuntimeException(BREACH_NOT_FOUND));
 
                     ProductEntity product = branch.getProducts()
-                            .stream()
-                            .filter(p -> p.getId().equals(productId)).findFirst()
+                            .stream().filter(p -> p.getId().equals(idProduct)).findFirst()
                             .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
 
                     product.setStock(newStock);
-                    return franchiseRepository.save(franchise).map(franchiseMapper::toFranchise);
+                    return franchiseRepository.save(franchise)
+                            .map(franchiseMapper::toFranchise);
                 }).onErrorMap(error -> new RuntimeException(
                         FAILED_TO_UPDATE_PRODUCT_STOCK, error));
     }

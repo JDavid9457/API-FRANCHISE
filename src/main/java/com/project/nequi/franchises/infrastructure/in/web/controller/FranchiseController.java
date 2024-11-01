@@ -30,17 +30,17 @@ public class FranchiseController {
         this.franchisePort = franchisePort;
     }
 
-    @GetMapping("/list")
+
     @SneakyThrows
+    @GetMapping("/list")
     public Flux<Franchise> getFranchises() {
         return franchisePort.findAll()
                 .doOnNext(franchise -> System.out.println("Franchise: " + franchise))
                 .doOnError(error -> System.err.println("Error: " + error.getMessage()));
     }
 
-
-    @PostMapping()
     @SneakyThrows
+    @PostMapping()
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveFranchise(
             @RequestBody FranchiseRequestDTO franchiseRequestDTO) {
         return franchisePort.save(FranchiseTransformer.toFranchise(franchiseRequestDTO))
@@ -48,8 +48,9 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildSaveResponse);
     }
 
-    @GetMapping("/{id}")
+
     @SneakyThrows
+    @GetMapping("/{id}")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> searchByIdFranchises(
             @PathVariable("id") String id) {
         return franchisePort.findById(id)
@@ -58,6 +59,7 @@ public class FranchiseController {
 
     }
 
+    @SneakyThrows
     @PostMapping("/{idFranchise}/{branch}")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveBranchInFranchise(
             @PathVariable String idFranchise,
@@ -68,7 +70,7 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildRegisterResponse);
     }
 
-
+    @SneakyThrows
     @PostMapping("/{idFranchise}/branch/{idBranch}/product")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> saveProductForBranch(
             @PathVariable String idFranchise,
@@ -79,6 +81,8 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildRegisterProductForBranchResponse);
     }
 
+
+    @SneakyThrows
     @DeleteMapping("/{idFranchise}/branch/{idBranch}/product/{idProduct}")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> deleteProductFromBranch(
             @PathVariable String idFranchise,
@@ -90,18 +94,21 @@ public class FranchiseController {
 
     }
 
-    @PutMapping("/{franchiseId}/branches/{branchId}/products/{productId}/stock")
+
+    @SneakyThrows
+    @PatchMapping("/{idFranchise}/branchs/{idBranch}/products/{idProduct}/stock")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> modifyProductByStock(
-            @PathVariable String franchiseId,
-            @PathVariable String branchId,
-            @PathVariable String productId,
+            @PathVariable String idFranchise,
+            @PathVariable String idBranch,
+            @PathVariable String idProduct,
             @RequestBody JsonNode body) {
         Integer newStock = body.get("stock").asInt();
-        return franchisePort.modifyProductStock(franchiseId, branchId, productId, newStock)
+        return franchisePort.modifyProductStock(idFranchise, idBranch, idProduct, newStock)
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildModifyStock);
     }
 
+    @SneakyThrows
     @GetMapping("/{franchiseId}/branches/{branchId}/products/max-stock")
     public Mono<ResponseEntity<ResponseDTO<ProductResponseDTO>>> getProductWithMaxStock(
             @PathVariable String franchiseId,
@@ -111,6 +118,8 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildProductWithMaxStock);
     }
 
+
+    @SneakyThrows
     @PutMapping("/{idFranchise}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateFranchiseByName(
             @PathVariable String idFranchise,
@@ -121,7 +130,8 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildUpdateFranchiseByNameResponse);
     }
 
-    @PutMapping("/{idFranchise}/branches/{idBranch}/name")
+    @SneakyThrows
+    @PutMapping("/{idFranchise}/branchs/{idBranch}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateBranchByName(
             @PathVariable String idFranchise,
             @PathVariable String idBranch,
@@ -132,7 +142,8 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildUpdateBrachByNameResponse);
     }
 
-    @PutMapping("/{idFranchise}/branches/{idBranch}/products/{idProduct}/name")
+    @SneakyThrows
+    @PutMapping("/{idFranchise}/branchs/{idBranch}/products/{idProduct}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateProductByName(
             @PathVariable String idFranchise,
             @PathVariable String idBranch,
