@@ -4,6 +4,7 @@
 
 ![Java Version](https://img.shields.io/badge/Java-17(LTS)-red?logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring&nbsp;Boot-3.3.2-success?logo=springboot)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?logo=mongodb&logoColor=white)](#)
 ![Gradle](https://img.shields.io/badge/Gradle-8.2.1-success?logo=Gradle)
 
 ## Soluccion del problema
