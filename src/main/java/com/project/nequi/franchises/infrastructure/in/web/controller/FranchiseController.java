@@ -30,7 +30,7 @@ public class FranchiseController {
         this.franchisePort = franchisePort;
     }
 
-    @GetMapping()
+    @GetMapping("/list")
     @SneakyThrows
     public Flux<Franchise> getFranchises() {
         return franchisePort.findAll()
@@ -111,33 +111,35 @@ public class FranchiseController {
                 .map(ResponseEntityBuilder::buildProductWithMaxStock);
     }
 
-    @PutMapping("/{id}/name")
+    @PutMapping("/{idFranchise}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateFranchiseByName(
-            @PathVariable String id,
+            @PathVariable String idFranchise,
             @RequestBody JsonNode body) {
-        String newName = body.get("name").asText();
-        return franchisePort.updateFranchiseName(id, newName)
+        String newName = body.get("name").asText().trim(); ;
+        return franchisePort.updateFranchiseName(idFranchise, newName)
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildUpdateFranchiseByNameResponse);
     }
 
-    @PutMapping("/{franchiseId}/branches/{branchId}/name")
+    @PutMapping("/{idFranchise}/branches/{idBranch}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateBranchByName(
-            @PathVariable String franchiseId,
-            @PathVariable String branchId,
-            @RequestBody String newBranchName) {
-        return franchisePort.updateBranchName(franchiseId, branchId, newBranchName)
+            @PathVariable String idFranchise,
+            @PathVariable String idBranch,
+            @RequestBody JsonNode body) {
+        String newName = body.get("name").asText().trim(); ;
+        return franchisePort.updateBranchName(idFranchise, idBranch, newName)
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildUpdateBrachByNameResponse);
     }
 
-    @PutMapping("/{franchiseId}/branches/{branchId}/products/{productId}/name")
+    @PutMapping("/{idFranchise}/branches/{idBranch}/products/{idProduct}/name")
     public Mono<ResponseEntity<ResponseDTO<FranchiseResponseDTO>>> updateProductByName(
-            @PathVariable String franchiseId,
-            @PathVariable String branchId,
-            @PathVariable String productId,
-            @RequestBody String newProductName) {
-        return franchisePort.updateProductName(franchiseId, branchId, productId, newProductName)
+            @PathVariable String idFranchise,
+            @PathVariable String idBranch,
+            @PathVariable String idProduct,
+            @RequestBody JsonNode body) {
+        String newName = body.get("name").asText().trim(); ;
+        return franchisePort.updateProductName(idFranchise, idBranch, idProduct, newName)
                 .map(FranchiseTransformer::toFranchiseToDTO)
                 .map(ResponseEntityBuilder::buildUpdateProductByNameResponse);
     }

@@ -20,7 +20,7 @@ public class ResponseEntityBuilder {
     public static <T> ResponseEntity<ResponseDTO<T>> buildRegisterResponse(T data) {
         return ResponseEntity.ok(
                 ResponseDTO.<T>builder()
-                        .message(BRACH_REGISTER_IN_FRANCHISE)
+                        .message(BREACH_REGISTER_IN_FRANCHISE)
                         .status(HttpStatus.CREATED.value())
                         .data(data)
                         .build());
@@ -29,7 +29,7 @@ public class ResponseEntityBuilder {
     public static <T> ResponseEntity<ResponseDTO<T>> buildRegisterProductForBranchResponse(T data) {
         return ResponseEntity.ok(
                 ResponseDTO.<T>builder()
-                        .message(BRACH_REGISTER_IN_FRANCHISE)
+                        .message(BREACH_REGISTER_IN_FRANCHISE)
                         .status(HttpStatus.CREATED.value())
                         .data(data)
                         .build());
@@ -47,7 +47,7 @@ public class ResponseEntityBuilder {
     public static <T> ResponseEntity<ResponseDTO<T>> buildModifyStock(T data) {
         return ResponseEntity.ok(
                 ResponseDTO.<T>builder()
-                        .message(USER_DELETED_SUCCESSFULLY)
+                        .message("ok")
                         .status(HttpStatus.OK.value())
                         .data(data)
                         .build());
@@ -96,7 +96,7 @@ public class ResponseEntityBuilder {
         public static <T> ResponseEntity<ResponseDTO<T>> buildDeletedResponse(T data) {
         return ResponseEntity.ok(
                 ResponseDTO.<T>builder()
-                        .message(USER_DELETED_SUCCESSFULLY)
+                        .message(FAILED_TO_REMOVE_PRODUCT_FROM_BRANCH)
                         .status(HttpStatus.OK.value())
                         .build());
     }
