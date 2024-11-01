@@ -65,12 +65,21 @@ http://localhost:8080/apifranchise/list
 ```
 
 ```sh
-buscar por id: devuelve los datos de las franquicias
-http://localhost:8080/apifranchise/{id}
+buscar por id: devuelve los datos de las franquicia
+http://localhost:8080/franchise/{id}
 ```
 ```sh
-elemiar por id: elimina el usuario en base de datos
-http://localhost:8080/api-user-manager/register/delete/{id}
+Cambiar nombre de franquicia
+http://localhost:8080/apifranchise/{id}/name
+```
+```sh
+Cambiar nombre de sucursal
+http://localhost:8080/apifranchise/{id}/branchs/{id}/name
+```
+
+```sh
+Cambiar nombre de producto
+http://localhost:8080/apifranchise/{id}/branches/{id}/products/{id}/name
 ```
 
 ## Respuesta principales del servicio:
@@ -234,7 +243,177 @@ respuesta cuando guardar una sucursal en una franquicia:
   "message": "Se ha regsitrado una sucursal en una franquicia"
 }
 ```
-
+Para cambiar el nombre de la framquicia
+```JSON
+{
+  "name": "Soya"
+}
+```
+respuesta cuando se actualiza nombre de la franquicia
+```JSON
+{
+  "data": {
+    "id": "6724d514f28ef41d4619b339",
+    "nameFranchise": "Soya",
+    "branchDTOList": [
+      {
+        "id": "6724d514f28ef41d4619b337",
+        "name": "Tringo",
+        "products": [
+          {
+            "id": "6724d514f28ef41d4619b338",
+            "name": "Maiz",
+            "stock": 1000
+          },
+          {
+            "id": "6724d916f28ef41d4619b33e",
+            "name": "Lulu",
+            "stock": 100
+          }
+        ]
+      },
+      {
+        "id": "6724d711f28ef41d4619b33a",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d711f28ef41d4619b33b",
+            "name": "negra",
+            "stock": 10
+          }
+        ]
+      },
+      {
+        "id": "6724d7b5f28ef41d4619b33c",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d7b5f28ef41d4619b33d",
+            "name": "negra",
+            "stock": 10
+          }
+        ]
+      }
+    ]
+  },
+  "status": 200,
+  "message": "Product with max stock found successfully."
+}
+```
+Para cambiar el nombre de la sucursal
+```JSON
+{
+  "name": "Arroz"
+}
+```
+respuesta cuando se actualiza nombre de la sucursal
+```JSON
+{
+  "data": {
+    "id": "6724d514f28ef41d4619b339",
+    "nameFranchise": "Arroz",
+    "branchDTOList": [
+      {
+        "id": "6724d514f28ef41d4619b337",
+        "name": "Tringo",
+        "products": [
+          {
+            "id": "6724d514f28ef41d4619b338",
+            "name": "Maiz",
+            "stock": 1000
+          },
+          {
+            "id": "6724d916f28ef41d4619b33e",
+            "name": "Lulu",
+            "stock": 100
+          }
+        ]
+      },
+      {
+        "id": "6724d711f28ef41d4619b33a",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d711f28ef41d4619b33b",
+            "name": "negra",
+            "stock": 10
+          }
+        ]
+      },
+      {
+        "id": "6724d7b5f28ef41d4619b33c",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d7b5f28ef41d4619b33d",
+            "name": "negra",
+            "stock": 10
+          }
+        ]
+      }
+    ]
+  },
+  "status": 200,
+  "message": "Product with max stock found successfully."
+}
+```
+Para cambiar el nombre del producto
+```JSON
+{
+  "name": "blanca"
+}
+```
+respuesta cuando se actualiza nombre del producto
+```JSON
+{
+  "data": {
+    "id": "6724d514f28ef41d4619b339",
+    "nameFranchise": "Arroz",
+    "branchDTOList": [
+      {
+        "id": "6724d514f28ef41d4619b337",
+        "name": "Tringo",
+        "products": [
+          {
+            "id": "6724d514f28ef41d4619b338",
+            "name": "Maiz",
+            "stock": 1000
+          },
+          {
+            "id": "6724d916f28ef41d4619b33e",
+            "name": "Lulu",
+            "stock": 100
+          }
+        ]
+      },
+      {
+        "id": "6724d711f28ef41d4619b33a",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d711f28ef41d4619b33b",
+            "name": "blanca",
+            "stock": 10
+          }
+        ]
+      },
+      {
+        "id": "6724d7b5f28ef41d4619b33c",
+        "name": "New Branch Aguila",
+        "products": [
+          {
+            "id": "6724d7b5f28ef41d4619b33d",
+            "name": "negra",
+            "stock": 10
+          }
+        ]
+      }
+    ]
+  },
+  "status": 200,
+  "message": "Product with max stock found successfully."
+}
+```
 
 
 
